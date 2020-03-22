@@ -10,9 +10,18 @@ class Virus {
   List<Sprite> flyingSprite;
   Sprite deadSprite;
   double flyingSpriteIndex = 0;
+  Offset targetLocation;
 
-  Virus(this.game, double x, double y) {
-    virusRect = Rect.fromLTWH(x, y, game.tileSize, game.tileSize);
+  double get speed => game.tileSize * 3;
+
+  Virus(this.game) {
+    setTargetLocation();
+  }
+
+  void setTargetLocation() {
+    double x = game.rnd.nextDouble() * (game.screenSize.width - (game.tileSize * 2.025));
+    double y = game.rnd.nextDouble() * (game.screenSize.height - (game.tileSize * 2.025));
+    targetLocation = Offset(x, y);
   }
 
   void render(Canvas c) {
@@ -33,6 +42,16 @@ class Virus {
       flyingSpriteIndex += 2 * t;
       if (flyingSpriteIndex >= 2) {
         flyingSpriteIndex -= 2;
+      }
+
+      double stepDistance = speed * t;
+      Offset toTarget = targetLocation - Offset(virusRect.left, virusRect.top);
+      if (stepDistance < toTarget.distance) {
+        Offset stepToTarget = Offset.fromDirection(toTarget.direction, stepDistance);
+        virusRect = virusRect.shift(stepToTarget);
+      } else {
+        virusRect = virusRect.shift(toTarget);
+        setTargetLocation();
       }
     }
   }
