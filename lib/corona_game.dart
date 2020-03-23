@@ -7,12 +7,22 @@ import 'package:flutter/gestures.dart';
 
 import 'package:corona_killer/components/virus.dart';
 import 'package:corona_killer/components/covid.dart';
+import 'package:corona_killer/view.dart';
+import 'package:corona_killer/views/home-view.dart';
+import 'package:corona_killer/components/start-button.dart';
+import 'package:corona_killer/views/lost-view.dart';
 
 class CoronaGame extends Game {
   Size screenSize;
   double tileSize;
   List<Virus> viruses;
   Random rnd;
+
+  View activeView = View.home;
+  HomeView homeView;
+  LostView lostView;
+
+  StartButton startButton;
 
   CoronaGame() {
     initialize();
@@ -23,6 +33,9 @@ class CoronaGame extends Game {
     rnd = Random();
     resize(await Flame.util.initialDimensions());
 
+    homeView = HomeView(this);
+    startButton = StartButton(this);
+    lostView = LostView(this);
     spawnVirus();
   }
 
@@ -39,6 +52,11 @@ class CoronaGame extends Game {
     canvas.drawRect(bgRect, bgPaint);
 
     viruses.forEach((Virus virus) => virus.render(canvas));
+    if (activeView == View.home) homeView.render(canvas);
+    if (activeView == View.home || activeView == View.lost) {
+      startButton.render(canvas);
+    }
+    if (activeView == View.lost) lostView.render(canvas);
     //print('rendered');
   }
 
@@ -53,10 +71,29 @@ class CoronaGame extends Game {
   }
 
   void onTapDown(TapDownDetails d) {
-    viruses.forEach((Virus virus) {
+    bool isHandled = false;
+
+    // Start Button
+    if (!isHandled && startButton.rect.contains(d.globalPosition)) {
+      if (activeView == View.home || activeView == View.lost) {
+        startButton.onTapDown();
+        isHandled = true;
+      }
+    }
+
+    // Viruses
+    if (!isHandled) {
+      bool didHitAVirus = false;
+      viruses.forEach((Virus virus) {
       if (virus.virusRect.contains(d.globalPosition)) {
         virus.onTapDown();
+        isHandled = true;
+        didHitAVirus = true;
       }
-    });
+      });
+      if (activeView == View.playing && !didHitAVirus) {
+        activeView = View.lost;
+      }
+    }
   }
 }

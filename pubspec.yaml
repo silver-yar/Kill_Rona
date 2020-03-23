@@ -40,6 +40,9 @@ flutter:
     - assets/images/rona.png
     - assets/images/glow_rona.png
     - assets/images/dead_rona.png
+    - assets/images/title.png
+    - assets/images/start-button.png
+    - assets/images/lose-splash.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
