@@ -1,17 +1,17 @@
 import 'package:corona_killer/corona_game.dart';
 import 'package:corona_killer/components/virus.dart';
 
-class FlySpawner {
+class VirusSpawner {
   final CoronaGame game;
-  final int maxSpawnInterval = 3000;
+  final int maxSpawnInterval = 1000;
   final int minSpawnInterval = 250;
   final int intervalChange = 3;
-  final int maxFliesOnScreen = 7;
+  final int maxFliesOnScreen = 10;
 
   int currentInterval;
   int nextSpawn;
 
-  FlySpawner(this.game) {
+  VirusSpawner(this.game) {
     start();
     game.spawnVirus();
   }

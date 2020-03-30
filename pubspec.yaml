@@ -20,6 +20,8 @@ dependencies:
   flutter:
     sdk: flutter
   flame: ^0.18.1
+  shared_preferences: ^0.5.6+3
+  url_launcher: ^5.4.2
   cupertino_icons: ^0.1.3
 
 dev_dependencies:
@@ -37,12 +39,23 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/images/background_globe.png
     - assets/images/rona.png
     - assets/images/glow_rona.png
     - assets/images/dead_rona.png
     - assets/images/title.png
     - assets/images/start-button.png
+    - assets/images/donate.png
     - assets/images/lose-splash.png
+    - assets/images/callout.png
+    - assets/images/icon-sound-disabled.png
+    - assets/images/icon-sound-enabled.png
+    - assets/audio/sfx/corona_one.mp3
+    - assets/audio/sfx/corona_two.mp3
+    - assets/audio/sfx/shit_real.mp3
+    - assets/audio/sfx/woo.mp3
+    - assets/audio/bgm/home.mp3
+    - assets/audio/bgm/playing.mp3
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flame/sprite.dart';
+import 'package:flame/flame.dart';
 import 'package:corona_killer/corona_game.dart';
+import 'package:corona_killer/view.dart';
+import 'package:corona_killer/components/callout.dart';
 
 class Virus {
   final CoronaGame game;
@@ -11,11 +14,15 @@ class Virus {
   Sprite deadSprite;
   double flyingSpriteIndex = 0;
   Offset targetLocation;
+  Callout callout;
+
+  int soundNum = 1;
 
   double get speed => game.tileSize * 3;
 
   Virus(this.game) {
     setTargetLocation();
+    callout = Callout(this);
   }
 
   void setTargetLocation() {
@@ -29,6 +36,9 @@ class Virus {
       deadSprite.renderRect(c, virusRect.inflate(2));
     } else {
       flyingSprite[flyingSpriteIndex.toInt()].renderRect(c, virusRect.inflate(2));
+      if (game.activeView == View.playing) {
+        callout.render(c);
+      }
     }
   }
 
@@ -53,11 +63,39 @@ class Virus {
         virusRect = virusRect.shift(toTarget);
         setTargetLocation();
       }
+      callout.update(t);
     }
   }
 
   void onTapDown() {
-    isDead = true;
-    game.spawnVirus();
+    if (!isDead) {
+      soundNum = game.rnd.nextInt(3) + 1;
+      if (game.soundButton.isEnabled) {
+        switch (soundNum) {
+          case 1: Flame.audio.play('sfx/corona_one.mp3');
+          break;
+
+          case 2: Flame.audio.play('sfx/corona_two.mp3');
+          break;
+
+          case 3: Flame.audio.play('sfx/woo.mp3');
+          break;
+
+          default: Flame.audio.play('sfx/corona_one.mp3');
+          break;
+        }
+      }
+      
+      isDead = true;
+      if (game.activeView == View.playing) {
+        game.score += 1;
+        
+        if (game.score > (game.storage.getInt('highscore') ?? 0)) {
+          game.storage.setInt('highscore', game.score);
+          game.highscoreDisplay.updateHighscore();
+        }
+      }
+    }
   }
+
 }
